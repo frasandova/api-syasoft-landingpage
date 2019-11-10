@@ -100,9 +100,9 @@ function sendEmail(nombre,email,descripcion){
 fs.readFile(filePath2, {encoding: 'utf-8'}, function(err, dataFileHtml) {
     if ( ! err ) {     
       var helper = require('sendgrid').mail;
-      var fromEmail = new helper.Email('contacto.syasoft@gmail.com');
-      var toEmail = new helper.Email('contacto.syasoft@gmail.com');
-      subject = "Contacto SYASOFT desde landing page 2";
+      var fromEmail = new helper.Email(process.env.FROM_EMAIL);
+      var toEmail = new helper.Email(process.env.TO_EMAIL);
+      subject = "CONTACTO SYASOFT DESDE LANDING PAGE";
       content = new helper.Content("text/html", dataFileHtml);
       mail = new helper.Mail(fromEmail, subject, toEmail, content);
       var sg = require('sendgrid')(process.env.SENDGRID_API_KEY);
