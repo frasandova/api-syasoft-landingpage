@@ -70,13 +70,12 @@ app.get('/send/:nombre/:email/:descripcion',(req, res, next)=>{
 
 function sendEmail(nombre,email,descripcion){
 
-  // var filePath = path.join(__dirname, 'template_email.html');
   
   var filePath = path.resolve(__dirname,`../templates/template_email.html`);    
   var filePath2 = path.resolve(__dirname,`../templates/template_email2.html`);
 
-  console.log('filePath1', filePath);
-  console.log('filePath2', filePath2);
+  // console.log('filePath1', filePath);
+  // console.log('filePath2', filePath2);
 
   
   fs.readFile(filePath, 'utf8', function (err,data) {
@@ -106,7 +105,8 @@ fs.readFile(filePath2, {encoding: 'utf-8'}, function(err, dataFileHtml) {
       subject = "Contacto SYASOFT desde landing page 2";
       content = new helper.Content("text/html", dataFileHtml);
       mail = new helper.Mail(fromEmail, subject, toEmail, content);
-      var sg = require('sendgrid')('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');
+      var sg = require('sendgrid')(process.env.SENDGRID_API_KEY);
+      // var sg = require('sendgrid')('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');
       var requestBody = mail.toJSON();
       var request = sg.emptyRequest();
       request.method = 'POST';

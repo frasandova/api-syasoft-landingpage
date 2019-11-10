@@ -8,6 +8,10 @@ process.env.PORT = process.env.PORT || 3000;
 //============================================
 process.env.NODE_ENV = process.env.NODE_ENV || 'dev';
 
+//============================================
+// Api SendGrid
+//============================================
+process.env.SENDGRID_API_KEY = process.env.SENDGRID_API_KEY || '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';
 
 //============================================
 // Entorno
