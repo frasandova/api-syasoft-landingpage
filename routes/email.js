@@ -3,10 +3,15 @@ var express = require('express');
 var Usuario = require('../models/usuario');
 var app = express();
 
+var fs = require('fs');
+var path = require('path');
+
+
 var helper = require('sendgrid').mail;
-var fromEmail = new helper.Email('frasandova@gmail.com');
-var toEmail = new helper.Email('frasandova@gmail.com');
-var subject = 'Sending with SendGrid is Fun';
+var fromEmail = new helper.Email('contacto.syasoft@gmail.com');
+var toEmail = new helper.Email('contacto.syasoft@gmail.com');
+var subject = 'Contacto SYASOFT desde landing page';
+var content = new helper.Content('text/plain', 'and easy to do anywhere, even with Node.js');
 var content = new helper.Content('text/plain', 'and easy to do anywhere, even with Node.js');
 var mail = new helper.Mail(fromEmail, subject, toEmail, content);
  
@@ -25,22 +30,105 @@ var request = sg.emptyRequest({
 //============================================
 //Obtener todos los usuarios
 //============================================
-app.get('/send',(req, res, next)=>{
 
-    sg.API(request, function (error, response) {
-        if (error) {
-          console.log('Error: ' + error);
-        }
-        console.log(response.statusCode);
-        console.log(response.body);
-        console.log(response.headers);
-      });
+// app.put('/:tipo/:id',(req, res, next)=>{
+
+//   var tipo = req.params.tipo;
+//   var id = req.params.id;
+
+app.get('/send/:nombre/:email/:descripcion',(req, res, next)=>{
+
+  // var nombre = req.query.nombre || 'nombre';
+  // var email = req.query.email || 'email';
+  // var descripcion = req.query.descripcion || 'descripcion';
+
+
+  var nombre = req.params.nombre || 'nombre';
+  var email = req.params.email || 'email';
+  var descripcion = req.params.descripcion || 'descripcion';
+
+  console.log('nombre',nombre);
+  console.log('email',email);
+  console.log('descripcion',descripcion);
+
+   sendEmail(nombre,email,descripcion);
+    // sg.API(request, function (error, response) {
+    //     if (error) {
+    //       console.log('Error: ' + error);
+    //     }
+    //     console.log(response.statusCode);
+    //     console.log(response.body);
+    //     console.log(response.headers);
+    //   });
     
     res.status(200).json({
         ok:true,
         mensaje:'Envio de correo realizado de forma correcta SENDGRID'
     });
 });
+
+
+function sendEmail(nombre,email,descripcion){
+
+  // var filePath = path.join(__dirname, 'template_email.html');
+  
+  var filePath = path.resolve(__dirname,`../templates/template_email.html`);    
+  var filePath2 = path.resolve(__dirname,`../templates/template_email2.html`);
+
+  console.log('filePath1', filePath);
+  console.log('filePath2', filePath2);
+
+  
+  fs.readFile(filePath, 'utf8', function (err,data) {
+    if (err) {
+      return console.log(err);
+    }
+    
+    var result = data.replace("{nombre}", nombre);
+    //console.log('result',result);
+    result = result.replace("{email}", email);
+    // console.log('result',result);
+    result = result.replace("{descripcion}", descripcion);
+     console.log('result',result);
+
+    // var result = fileAsString.replace(/string to be replaced/g, 'replacement');
+
+    fs.writeFile(filePath2, result, 'utf8', function (err) {
+      if (err) return console.log(err);
+    });
+  });
+
+fs.readFile(filePath2, {encoding: 'utf-8'}, function(err, dataFileHtml) {
+    if ( ! err ) {     
+      var helper = require('sendgrid').mail;
+      var fromEmail = new helper.Email('contacto.syasoft@gmail.com');
+      var toEmail = new helper.Email('contacto.syasoft@gmail.com');
+      subject = "Contacto SYASOFT desde landing page 2";
+      content = new helper.Content("text/html", dataFileHtml);
+      mail = new helper.Mail(fromEmail, subject, toEmail, content);
+      var sg = require('sendgrid')('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');
+      var requestBody = mail.toJSON();
+      var request = sg.emptyRequest();
+      request.method = 'POST';
+      request.path = '/v3/mail/send';
+      request.body = requestBody;
+      sg.API(request, function (error, response) {
+        if ( ! error ) {
+          console.log(response.statusCode);
+          console.log(response.body);
+          console.log(response.headers);
+        } else {
+          console.log(error);
+        }
+      });
+    } else {
+        console.log(err);
+    }
+});
+
+
+
+}
 
 
 module.exports= app;
