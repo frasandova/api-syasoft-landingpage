@@ -28,10 +28,13 @@ mongoose.connection.openUri(process.env.URLDB,
 });
 
 // Importar Rutas
+var emailRoutes = require('./routes/email');
 var usuarioRoutes = require('./routes/usuario');
 var appRoutes = require('./routes/app');
 
 //Rutas
+
+app.use('/email', emailRoutes);
 app.use('/usuario', usuarioRoutes);
 app.use('/', appRoutes);
 
