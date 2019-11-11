@@ -1,30 +1,36 @@
 //Requires
+
+// require('./config.js');
+
+// require('../config.js');
+
 var express = require('express');
 var Usuario = require('../models/usuario');
 var app = express();
+
 
 var fs = require('fs');
 var path = require('path');
 
 
-var helper = require('sendgrid').mail;
-var fromEmail = new helper.Email('contacto.syasoft@gmail.com');
-var toEmail = new helper.Email('contacto.syasoft@gmail.com');
-var subject = 'Contacto SYASOFT desde landing page';
-var content = new helper.Content('text/plain', 'and easy to do anywhere, even with Node.js');
-var content = new helper.Content('text/plain', 'and easy to do anywhere, even with Node.js');
-var mail = new helper.Mail(fromEmail, subject, toEmail, content);
+// var helper = require('sendgrid').mail;
+// var fromEmail = new helper.Email('contacto.syasoft@gmail.com');
+// var toEmail = new helper.Email('contacto.syasoft@gmail.com');
+// var subject = 'Contacto SYASOFT desde landing page';
+// var content = new helper.Content('text/plain', 'and easy to do anywhere, even with Node.js');
+// var content = new helper.Content('text/plain', 'and easy to do anywhere, even with Node.js');
+// var mail = new helper.Mail(fromEmail, subject, toEmail, content);
  
 // var sg = require('sendgrid')(process.env.SENDGRID_API_KEY);
 
  
- var sg = require('sendgrid')('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');
+//  var sg = require('sendgrid')('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');
 
-var request = sg.emptyRequest({
-  method: 'POST',
-  path: '/v3/mail/send',
-  body: mail.toJSON()
-});
+// var request = sg.emptyRequest({
+//   method: 'POST',
+//   path: '/v3/mail/send',
+//   body: mail.toJSON()
+// });
  
 
 //============================================
@@ -38,6 +44,9 @@ var request = sg.emptyRequest({
 
 app.get('/send/:nombre/:email/:descripcion',(req, res, next)=>{
 
+  // console.log('process.env.SENDGRID_API_KEY',process.env.SENDGRID_API_KEY);
+  // console.log('process.env.FROM_EMAIL',process.env.FROM_EMAIL);
+  // console.log('process.env.TO_EMAIL',process.env.TO_EMAIL);
   // var nombre = req.query.nombre || 'nombre';
   // var email = req.query.email || 'email';
   // var descripcion = req.query.descripcion || 'descripcion';
@@ -88,7 +97,7 @@ function sendEmail(nombre,email,descripcion){
     result = result.replace("{email}", email);
     // console.log('result',result);
     result = result.replace("{descripcion}", descripcion);
-     console.log('result',result);
+    //  console.log('result',result);
 
     // var result = fileAsString.replace(/string to be replaced/g, 'replacement');
 
@@ -98,15 +107,32 @@ function sendEmail(nombre,email,descripcion){
   });
 
 fs.readFile(filePath2, {encoding: 'utf-8'}, function(err, dataFileHtml) {
-    if ( ! err ) {     
+    if ( ! err ) {    
+      
+
+
       var helper = require('sendgrid').mail;
-      var fromEmail = new helper.Email(process.env.FROM_EMAIL);
-      var toEmail = new helper.Email(process.env.TO_EMAIL);
+      //  var fromEmail = new helper.Email(process.env.FROM_EMAIL);
+      //  var toEmail = new helper.Email(process.env.TO_EMAIL);
+
+      
+      // var fromEmail = new helper.Email('frasandova@gmail.com');
+      // var toEmail = new helper.Email('frasandova@gmail.com');
+
+      var fromEmail = new helper.Email('contacto.syasoft@gmail.com');
+      var toEmail = new helper.Email('contacto.syasoft@gmail.com');
+
+
       subject = "CONTACTO SYASOFT DESDE LANDING PAGE";
       content = new helper.Content("text/html", dataFileHtml);
       mail = new helper.Mail(fromEmail, subject, toEmail, content);
+   
+      
+      //var sg = require('sendgrid')('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');
+      //var sg = require('sendgrid')('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');
+      
       var sg = require('sendgrid')(process.env.SENDGRID_API_KEY);
-      // var sg = require('sendgrid')('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');
+
       var requestBody = mail.toJSON();
       var request = sg.emptyRequest();
       request.method = 'POST';
@@ -114,11 +140,11 @@ fs.readFile(filePath2, {encoding: 'utf-8'}, function(err, dataFileHtml) {
       request.body = requestBody;
       sg.API(request, function (error, response) {
         if ( ! error ) {
-          console.log(response.statusCode);
-          console.log(response.body);
-          console.log(response.headers);
+          console.log('response.statusCode', response.statusCode);
+          console.log('response.body', response.body);
+          console.log('response.headers', response.headers);
         } else {
-          console.log(error);
+          console.log('Error',error);
         }
       });
     } else {

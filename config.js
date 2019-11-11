@@ -11,9 +11,11 @@ process.env.NODE_ENV = process.env.NODE_ENV || 'dev';
 //============================================
 // Api SendGrid
 //============================================
-process.env.SENDGRID_API_KEY = process.env.SENDGRID_API_KEY || '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';
-process.env.FROM_EMAIL = 'frasandova@gmail.com';
-process.env.TO_EMAIL = 'frasandova@gmail.com';
+// process.env.SENDGRID_API_KEY = process.env.SENDGRID_API_KEY || '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';
+
+process.env.SENDGRID_API_KEY = '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';
+process.env.FROM_EMAIL = 'contacto.syasoft@gmail.com';
+process.env.TO_EMAIL = 'contacto.syasoft@gmail.com';
 
 //============================================
 // Entorno
